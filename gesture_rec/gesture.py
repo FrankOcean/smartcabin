@@ -11,19 +11,19 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_Form(object):
-    def setupUi(self, Form):
-        Form.setObjectName("Form")
-        Form.resize(967, 688)
-        self.pushButton = QtWidgets.QPushButton(Form)
+class Ui_GestureForm(object):
+    def setupUi(self, GestureForm):
+        GestureForm.setObjectName("GestureForm")
+        GestureForm.resize(967, 688)
+        self.pushButton = QtWidgets.QPushButton(GestureForm)
         self.pushButton.setGeometry(QtCore.QRect(570, 210, 89, 27))
         self.pushButton.setObjectName("pushButton")
 
-        self.retranslateUi(Form)
-        self.pushButton.clicked.connect(Form.close)
-        QtCore.QMetaObject.connectSlotsByName(Form)
+        self.retranslateUi(GestureForm)
+        self.pushButton.clicked.connect(GestureForm.close)
+        QtCore.QMetaObject.connectSlotsByName(GestureForm)
 
-    def retranslateUi(self, Form):
+    def retranslateUi(self, GestureForm):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
-        self.pushButton.setText(_translate("Form", "关闭"))
+        GestureForm.setWindowTitle(_translate("GestureForm", "Form"))
+        self.pushButton.setText(_translate("GestureForm", "关闭"))

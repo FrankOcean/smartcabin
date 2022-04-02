@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>SemanticForm</class>
+ <widget class="QWidget" name="SemanticForm">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -16,8 +16,8 @@
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>570</x>
-     <y>210</y>
+     <x>380</x>
+     <y>300</y>
      <width>89</width>
      <height>27</height>
     </rect>
@@ -32,7 +32,7 @@
   <connection>
    <sender>pushButton</sender>
    <signal>clicked()</signal>
-   <receiver>Form</receiver>
+   <receiver>SemanticForm</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">

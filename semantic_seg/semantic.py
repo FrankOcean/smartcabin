@@ -11,19 +11,19 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_Form(object):
-    def setupUi(self, Form):
-        Form.setObjectName("Form")
-        Form.resize(967, 688)
-        self.pushButton = QtWidgets.QPushButton(Form)
-        self.pushButton.setGeometry(QtCore.QRect(570, 210, 89, 27))
+class Ui_SemanticForm(object):
+    def setupUi(self, SemanticForm):
+        SemanticForm.setObjectName("SemanticForm")
+        SemanticForm.resize(967, 688)
+        self.pushButton = QtWidgets.QPushButton(SemanticForm)
+        self.pushButton.setGeometry(QtCore.QRect(380, 300, 89, 27))
         self.pushButton.setObjectName("pushButton")
 
-        self.retranslateUi(Form)
-        self.pushButton.clicked.connect(Form.close)
-        QtCore.QMetaObject.connectSlotsByName(Form)
+        self.retranslateUi(SemanticForm)
+        self.pushButton.clicked.connect(SemanticForm.close)
+        QtCore.QMetaObject.connectSlotsByName(SemanticForm)
 
-    def retranslateUi(self, Form):
+    def retranslateUi(self, SemanticForm):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
-        self.pushButton.setText(_translate("Form", "关闭"))
+        SemanticForm.setWindowTitle(_translate("SemanticForm", "Form"))
+        self.pushButton.setText(_translate("SemanticForm", "关闭"))
