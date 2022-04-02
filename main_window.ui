@@ -13,14 +13,30 @@
   <property name="windowTitle">
    <string>smart_v0</string>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QWidget" name="gridLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>-1</x>
+      <y>9</y>
+      <width>791</width>
+      <height>541</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+    </layout>
+   </widget>
+  </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>26</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -42,7 +58,7 @@
     <property name="title">
      <string>视频去雨</string>
     </property>
-    <addaction name="derain"/>
+    <addaction name="derainbtn"/>
    </widget>
    <widget class="QMenu" name="menu_5">
     <property name="title">
@@ -68,7 +84,7 @@
    <addaction name="menu_7"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="derain">
+  <action name="derainbtn">
    <property name="text">
     <string>derain</string>
    </property>

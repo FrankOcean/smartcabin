@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets, QtCore
 from main_window import Ui_MainWindow
+from derain import Ui_Form
 
 # 系统主菜单
 class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
@@ -9,8 +10,14 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         super(MyWindow, self).__init__()
         self.setupUi(self)
 
-        self.derain.triggered.connect(self.testClick)
+        self.derainbtn.triggered.connect(self.window_derain_show)
         self._signal.connect(self.mySignal)  # 将信号连接到函数mySignal
+
+        self.child = ChildrenForm()
+
+    def window_derain_show(self):
+        self.gridLayout.addWidget(self.child)
+        self.child.show()
 
     # 打开去雨窗口
     def open_derain_window(self):
@@ -39,9 +46,16 @@ class MyWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     # 测试事件
     def testClick(self):
         self._signal.emit("点击事件接收")
+        self.childShow()
 
     def mySignal(self, string):
         print(string)
+
+# derain children window
+class ChildrenForm(QtWidgets.QWidget, Ui_Form):
+    def __init__(self):
+        super(ChildrenForm, self).__init__()
+        self.setupUi(self)
 
 if __name__ == "__main__":
     import sys
