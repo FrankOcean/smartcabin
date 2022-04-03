@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1237</width>
-    <height>869</height>
+    <width>905</width>
+    <height>626</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,7 +24,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_3">
+      <widget class="QPushButton" name="openfile_btn">
        <property name="text">
         <string>打开文件</string>
        </property>
@@ -131,8 +131,8 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>220</x>
-     <y>126</y>
+     <x>95</x>
+     <y>43</y>
     </hint>
     <hint type="destinationlabel">
      <x>185</x>

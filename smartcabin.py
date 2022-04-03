@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets
 from mainwindow.main_window import Ui_MainWindow
-from derain.derain import Ui_DerainForm
+from derain.smart_derain import Ui_DerainForm
 from dehaze.dehaze import Ui_DehazeForm
 from eye_track.eyetrack import Ui_EyetrackForm
 from face_rec.facerec import Ui_FacerecForm
