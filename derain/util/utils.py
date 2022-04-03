@@ -1,7 +1,20 @@
 import os, cv2, time, shutil
+from PyQt5.QtGui import QPixmap, QImage
 from tqdm import tqdm
 from PIL import Image
 import numpy as np
+
+def read_pixmap(filename="nil", show_image=''):
+    if filename == "nil":
+        # 从本地读图
+        return QPixmap(filename)
+    else:
+        # np数组生成的图
+        len_x = show_image.shape[1]  # 获取图像大小
+        wid_y = show_image.shape[0]
+        frame = QImage(show_image.data, len_x, wid_y, len_x * 3, QImage.Format_RGB888)
+        pix = QPixmap.fromImage(frame)
+        return pix
 
 def trainsform(video_path='/data/test.flv', out_path='data/test2.avi'):  # 自定义输出后缀
     cap = cv2.VideoCapture(video_path)
@@ -9,7 +22,6 @@ def trainsform(video_path='/data/test.flv', out_path='data/test2.avi'):  # 自�
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     weight = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     fps = int(cap.get(cv2.CAP_PROP_FPS))
-
     size = (weight, height)
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
     out = cv2.VideoWriter(out_path, fourcc, fps, size)  # fourcc是编码格式，size是图片尺寸
@@ -20,7 +32,6 @@ def trainsform(video_path='/data/test.flv', out_path='data/test2.avi'):  # 自�
         out.write(frame)
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break
-
     cap.release()
     out.release()
 

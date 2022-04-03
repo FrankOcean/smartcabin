@@ -55,13 +55,10 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_6">
-       <item>
-        <widget class="QColumnView" name="columnView_2"/>
-       </item>
-       <item>
-        <widget class="QColumnView" name="columnView_3"/>
-       </item>
+      <layout class="QHBoxLayout" name="video_compare_constrain">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetMinimumSize</enum>
+       </property>
       </layout>
      </item>
      <item>
@@ -87,9 +84,16 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="process_label">
        <property name="text">
-        <string>处理进度》》》</string>
+        <string>处理进度:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QProgressBar" name="progressBar">
+       <property name="value">
+        <number>24</number>
        </property>
       </widget>
      </item>

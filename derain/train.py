@@ -2,8 +2,8 @@
 
 import time, os
 import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
 from GuidedFilter import guided_filter
+tf.disable_v2_behavior()
 
 ##################### Select GPU device ####################################
 os.environ['CUDA_VISIBLE_DEVICES'] = "0"
