@@ -189,6 +189,6 @@ class VideoTimer(QThread):
 if __name__ == "__main__":
     mapp = QApplication(sys.argv)
     mw = VideoBox()
-    mw.set_video("../data/input/input_tennis.mp4", VideoBox.VIDEO_TYPE_OFFLINE, False)
+    mw.set_video("./data/input/input_tennis.mp4", VideoBox.VIDEO_TYPE_OFFLINE, False)
     mw.show()
     sys.exit(mapp.exec_())

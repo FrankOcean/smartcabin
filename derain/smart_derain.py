@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from PyQt5 import QtWidgets
 from derain import Ui_DerainForm
-from util.video_box import VideoBox
+from video_box import VideoBox
 from util.utils import *
+from settings import *
 import os, time, train
 import numpy as np
 import tensorflow.compat.v1 as tf
@@ -13,13 +14,6 @@ os.environ['CUDA_VISIBLE_DEVICES'] = "0"
 ############################################################################
 
 tf.reset_default_graph()
-
-model_path = './model/'
-pre_trained_model_path = './model/trained/model'
-
-img_path = './TestData/deraining_sequences/highway/input/'
-results_path = './TestData/results/' # the path of de-rained images
-video_path = './TestData/video_output/'
 
 # 去雨菜单 继承derain.py
 # 主要界面都在derain.py内完成
@@ -33,7 +27,7 @@ class SmartDerainWindow(QtWidgets.QWidget, Ui_DerainForm):
         self.size = (256, 256)  # 所处理视频的分辨率，默认256*256
         self.fps = 10          # 视频帧率，默认10
         self.frame_count = 100    # 视频总帧数
-        self.progressBar.setHidden(True)
+        self.progressBar.setValue(0)
         self.openfile_btn.clicked.connect(self.open_video_file)
         self.video_box = VideoBox()
         self.video_box1 = VideoBox()
@@ -45,52 +39,33 @@ class SmartDerainWindow(QtWidgets.QWidget, Ui_DerainForm):
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(self, "打开文件", self.cwd, "All Files (*);; Video File(*.mp4 *.flv)")
         if filename:
             print(f"file: {filename}")
-            self.split_video(filename)
+            self.gener_video(filename)
+            self.video_box.set_video(filename)
 
-    def split_video(self, video_path):
-        cap = cv2.VideoCapture(video_path)
-        frame_cnt = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    def gener_video(self, input_path, video_name="output.mp4"):
+
+        cap = cv2.VideoCapture(input_path)
+        frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
         weight = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        self.fps = int(cap.get(cv2.CAP_PROP_FPS))
-        self.frame_count = frame_cnt
+        fps = int(cap.get(cv2.CAP_PROP_FPS))
+        size = (weight, height)
+        self.fps = fps
+        self.size = size
+        self.frame_count = frame_count
 
-        self.size = (weight, height)
-
-        self.progressBar.setHidden(False)
-        for n in range(frame_cnt):
-            self.progressBar.setValue((n+1)/frame_cnt)
-            proces_str = '视频合成进度:{0}/{1}'.format(n+1, frame_cnt)
-            self.process_label.setText(proces_str)
-            ret, frame = cap.read()
-
-        cap.release()
-        self.progressBar.setValue(0)
-        self.progressBar.setHidden(True)
-
-    def _parse_function(filename):
-        image_string = tf.read_file(filename)
-        image_decoded = tf.image.decode_jpeg(image_string, channels=3)
-        rainy = tf.cast(image_decoded, tf.float32) / 255.0
-        return rainy
-
-    def gener_video(self, file_dir=results_path, video_name="output.mp4"):
-
-        fps = 10  # 我设定位视频每秒1帧，可以自行修改
         fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        video = cv2.VideoWriter(video_path + video_name, fourcc, fps, self.size)
+        video = cv2.VideoWriter(video_path+video_name, fourcc, fps, size)
+
+        print(size)
 
         start = time.time()
 
-        filename_tensor = tf.convert_to_tensor("whole_path", dtype=tf.string)
-        dataset = tf.data.Dataset.from_tensor_slices((filename_tensor))
-        dataset = dataset.map(self._parse_function)
-        dataset = dataset.prefetch(buffer_size=10)
-        dataset = dataset.batch(batch_size=1).repeat()
-        iterator = dataset.make_one_shot_iterator()
+        ret, rain1 = cap.read()
+        rain1 = np.expand_dims(rain1, axis=0)
+        rainy = tf.cast(rain1, tf.float32) / 255.0
 
-        rain = iterator.get_next()
-        rain_pad = tf.pad(rain, [[0, 0], [10, 10], [10, 10], [0, 0]], "SYMMETRIC")
+        rain_pad = tf.pad(rainy, [[0, 0], [10, 10], [10, 10], [0, 0]], "SYMMETRIC")
 
         detail, base = train.inference(rain_pad)
 
@@ -105,42 +80,33 @@ class SmartDerainWindow(QtWidgets.QWidget, Ui_DerainForm):
         saver = tf.train.Saver()
 
         with tf.Session(config=config) as sess:
-
             with tf.device('/gpu:0'):
-                if tf.train.get_checkpoint_state(model_path):
-                    ckpt = tf.train.latest_checkpoint(model_path)  # try your own model
-                    saver.restore(sess, ckpt)
-                    print("Loading model")
-                else:
-                    saver.restore(sess, pre_trained_model_path)  # try a pre-trained model
-                    print("Loading pre-trained model")
-
-                for i in range(self.frame_count):
-                    derained, ori = sess.run([output, rain])
+                ckpt = tf.train.latest_checkpoint(model_path)  # try your own model
+                saver.restore(sess, ckpt)
+                print("Loading >>>>>>>>>>>>>")
+                for i in range(20):   # 这里改为self.frame_count
+                    derained, ori = sess.run([output, rainy])
                     derained = np.uint8(derained * 255.)
                     if derained.ndim == 3:
                         derained = derained[:, :, ::-1]  ### RGB to BGR
+                    print(derained.shape)
                     video.write(derained)
-                    print('%d / %d fps processed' % (i + 1, self.frame_count))
-        end = time.time() - start
+                    #video.write(derained)
+                    message = '{} / {} fps processed'.format(i + 1, self.frame_count)
+                    print(message)
+                    # self.process_label.setText(message)
+                    self.progressBar.setValue(int((i + 1) / self.frame_count)*100)
+        self.progressBar.setValue(100)
         sess.close()
         video.release()
+        cap.release()
         cv2.destroyAllWindows()
-        print('视频合成生成完成')
-        print("用时{}秒".format(end))
-
-    def test_whole_datasets(self):
-        base_path = './data/input/'
-        basefilenamelist = os.listdir(base_path)
-        basefilenamelist = [f for f in basefilenamelist if not file_is_hidden(f)]  # 删除隐藏文件
-        #     full_path = []
-        for filename in basefilenamelist:
-            input_filepath = base_path + filename + "/input/"  # './TestData/deraining_sequences/loveletter2/input/'
-            #         full_path.append(input_filepath)
-            print(input_filepath)
-            self.gener_video(file_dir=input_filepath, video_name="output_" + filename + ".mp4")
-            sync_video(file_dir=input_filepath, video_name="input_" + filename + ".mp4")
-        print('全部处理完成')
+        end = time.time() - start
+        # print('视频生成完成')
+        # print("用时{}秒".format(end))
+        self.video_box1.set_video(video_path+video_name)
+        print(video_path+video_name)
+        self.process_label.setText('视频生成完成, 用时{}秒'.format(end))
 
     # 测试事件
     def msg(self):
