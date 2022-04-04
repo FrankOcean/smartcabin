@@ -1,5 +1,3 @@
-# This tensorflow implementation of guided filter is from: H. Wu, et al., "Fast End-to-End Trainable Guided Filter", CPVR, 2018.
-
 # Web: https://github.com/wuhuikai/DeepGuidedFilter
 
 import tensorflow as tf

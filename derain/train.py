@@ -7,7 +7,6 @@ tf.disable_v2_behavior()
 
 ##################### Select GPU device ####################################
 os.environ['CUDA_VISIBLE_DEVICES'] = "0"
-############################################################################
 tf.reset_default_graph()
 ##################### Network parameters ###################################
 num_feature = 512  # number of feature maps
