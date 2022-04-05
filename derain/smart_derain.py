@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 from PyQt5 import QtWidgets
-import os, threading
+import os, time, threading
+from derain import Ui_DerainForm
+from video_box import VideoBox
+from util.utils import *
+from opt import *
+import training
 import tensorflow.compat.v1 as tf
 
 ##################### Select GPU device ####################################
@@ -8,21 +13,6 @@ os.environ['CUDA_VISIBLE_DEVICES'] = "0"
 tf.disable_v2_behavior()
 tf.reset_default_graph()
 ############################################################################
-
-try:
-    # run in smart_derain.py
-    from derain import Ui_DerainForm
-    from video_box import VideoBox
-    from util.utils import *
-    from opt import *
-    import train
-except ImportError:
-    # run in smartcabin.py
-    from derain.derain import Ui_DerainForm
-    from derain.video_box import VideoBox
-    from derain.util.utils import *
-    from derain.opt import *
-    import derain.train
 
 # 去雨菜单 继承derain.py
 # 主要界面都在derain.py内完成
@@ -32,11 +22,13 @@ class SmartDerainWindow(QtWidgets.QWidget, Ui_DerainForm):
     def __init__(self):
         super(SmartDerainWindow, self).__init__()
         self.setupUi(self)
+        self.load_default_settings()
+
+    def load_default_settings(self):
         self.cwd = os.getcwd()  # 当前路径
         self.size = (256, 256)  # 所处理视频的分辨率，默认256*256
-        self.fps = 10           # 视频帧率，默认10
-        self.frame_count = 100    # 视频总帧数
-        self.progressBar.setValue(0)
+        self.fps = 10  # 视频帧率，默认10
+        self.frame_count = 100  # 视频总帧数
         self.openfile_btn.clicked.connect(self.open_video_file)
         self.video_box = VideoBox()
         self.video_box1 = VideoBox()
@@ -49,7 +41,7 @@ class SmartDerainWindow(QtWidgets.QWidget, Ui_DerainForm):
         if filepath:
             print(f"file: {filepath}")
             filename = filepath.split('/')[-1].split(".")[0]
-            video_name = "out_" + filename + ".mp4"
+            video_name = "out_" + filename + ".avi"
             print(video_name)
             #self.gener_video(filepath, video_name=video_name)
             self.video_box.set_video(filepath)
@@ -59,7 +51,9 @@ class SmartDerainWindow(QtWidgets.QWidget, Ui_DerainForm):
             except:
                 print("Error: unable to start thread")
 
-    def gener_video(self, input_path, video_name="output.mp4"):
+    def gener_video(self, input_path, video_name="output.avi"):
+
+        self.info_label.setText("Loading >>>>>>>>>>>>>>>>>>>>>>>>>>")
 
         cap = cv2.VideoCapture(input_path)
         frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -71,7 +65,7 @@ class SmartDerainWindow(QtWidgets.QWidget, Ui_DerainForm):
         self.size = size
         self.frame_count = frame_count
 
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        fourcc = cv2.VideoWriter_fourcc(*'MJPG')
         video = cv2.VideoWriter(video_path+video_name, fourcc, fps, size)
 
         start = time.time()
@@ -83,7 +77,6 @@ class SmartDerainWindow(QtWidgets.QWidget, Ui_DerainForm):
                 ori_nor = tf.cast(ori, tf.float32) / 255.0
                 rainy_arr.append(ori_nor)
 
-
         dataset = tf.data.Dataset.from_tensor_slices((rainy_arr))
         dataset = dataset.prefetch(buffer_size=10)
         dataset = dataset.batch(batch_size=1).repeat()
@@ -92,7 +85,7 @@ class SmartDerainWindow(QtWidgets.QWidget, Ui_DerainForm):
 
         rain_pad = tf.pad(rainy, [[0, 0], [10, 10], [10, 10], [0, 0]], "SYMMETRIC")
 
-        detail, base = train.inference(rain_pad)
+        detail, base = training.inference(rain_pad)
 
         detail = detail[:, 6:tf.shape(detail)[1] - 6, 6:tf.shape(detail)[2] - 6, :]
         base = base[:, 10:tf.shape(base)[1] - 10, 10:tf.shape(base)[2] - 10, :]
@@ -100,9 +93,8 @@ class SmartDerainWindow(QtWidgets.QWidget, Ui_DerainForm):
         output = tf.clip_by_value(base + detail, 0., 1.)
         output = output[0, :, :, :]
 
-        message = "视频帧解析完成，分辨率{}，帧率{}，帧数{}, 用时{:.2f}".format(size, fps, frame_count, time.time()-start)
-        self.process_label.setText(message)
-        time.sleep(3)
+        message = "视频帧解析完成用时{:.2f}秒，分辨率{}，帧率{}帧/秒，视频总帧数{}帧, ".format(time.time()-start, size, fps, frame_count)
+        self.info_label.setText(message)
 
         config = tf.ConfigProto()
         config.gpu_options.allow_growth = True
@@ -111,30 +103,24 @@ class SmartDerainWindow(QtWidgets.QWidget, Ui_DerainForm):
         start = time.time()
         with tf.Session(config=config) as sess:
             with tf.device('/gpu:0'):
+                print(model_path)
                 ckpt = tf.train.latest_checkpoint(model_path)  # try your own model
                 saver.restore(sess, ckpt)
-                print("Loading >>>>>>>>>>>>>")
-                for i in range(10):   # 这里改为frame_count
+                for i in range(frame_count):   # 这里改为frame_count
                     derained, ori = sess.run([output, rainy])
                     derained = np.uint8(derained * 255.)
-                    if derained.ndim == 3:
-                        derained = derained[:, :, ::-1]  ### RGB to BGR
                     video.write(derained)
                     message = '第 {} / {} 帧去雨中'.format(i + 1, frame_count)
                     print(message)
                     self.process_label.setText(message)
-                    self.progressBar.setValue(int(i/frame_count)*1000)
-        # self.progressBar.setValue(100)
         sess.close()
         video.release()
         cap.release()
         cv2.destroyAllWindows()
         end = time.time() - start
-        # print('视频生成完成')
-        # print("用时{}秒".format(end))
         print(video_path+video_name)
         self.process_label.setText('视频生成完成, 用时{:.2f}秒'.format(end))
-        time.sleep(5)
+        time.sleep(2)
         self.video_box1.set_video(video_path+video_name)
 
     # 测试事件

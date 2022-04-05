@@ -3,11 +3,11 @@
 import time, os
 import tensorflow.compat.v1 as tf
 from GuidedFilter import guided_filter
-tf.disable_v2_behavior()
 
 ##################### Select GPU device ####################################
 os.environ['CUDA_VISIBLE_DEVICES'] = "0"
 tf.reset_default_graph()
+tf.disable_v2_behavior()
 ##################### Network parameters ###################################
 num_feature = 512  # number of feature maps
 num_channels = 3  # number of input's channels

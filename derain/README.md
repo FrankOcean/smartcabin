@@ -6,6 +6,8 @@
 - numpy==1.19.5
 - PyQt5==5.15.2
 # 2. 说明
+- opt.py 为全局配置文件
+- GuidedFilter 为可训练的过滤器，具体参考：https://github.com/wuhuikai/DeepGuidedFilter  
 - smart_derain.py 可单独运行，也可以做为模块运行
 - video_box.py 可单独运行，作为单独的视频播放器
 usage: VideoBox().set_video("video_path", VideoBox.VIDEO_TYPE_OFFLINE, False)

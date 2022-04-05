@@ -24,7 +24,10 @@ class VideoBox(QWidget):
 
         # 组件展示
         self.pictureLabel = QLabel()
-        init_image = QPixmap("./tmp/000.jpeg").scaled(self.width(), self.height())
+        path = os.getcwd() + "/tmp/000.jpeg"
+        if not os.path.exists(path):
+            path = os.getcwd() + "/derain/tmp/000.jpeg"
+        init_image = QPixmap(path).scaled(self.width(), self.height())
         self.pictureLabel.setPixmap(init_image)
 
         self.playButton = QPushButton()

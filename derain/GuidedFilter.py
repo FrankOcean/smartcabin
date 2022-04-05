@@ -1,5 +1,3 @@
-# Web: https://github.com/wuhuikai/DeepGuidedFilter
-
 import tensorflow as tf
 
 def diff_x(input, r):
