@@ -1,8 +1,8 @@
-import time
+import time, os, sys
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from cv2 import *
+import cv2
 
 class VideoBox(QWidget):
 
@@ -50,7 +50,7 @@ class VideoBox(QWidget):
         self.timer.timeSignal.signal[str].connect(self.show_video_images)
 
         # video 初始设置
-        self.playCapture = VideoCapture()
+        self.playCapture = cv2.VideoCapture()
         if self.video_url != "":
             self.set_timer_fps()
             if self.auto_play:
@@ -65,7 +65,7 @@ class VideoBox(QWidget):
 
     def set_timer_fps(self):
         self.playCapture.open(self.video_url)
-        fps = self.playCapture.get(CAP_PROP_FPS)
+        fps = self.playCapture.get(cv2.CAP_PROP_FPS)
         self.timer.set_fps(fps)
         self.playCapture.release()
 
@@ -112,9 +112,9 @@ class VideoBox(QWidget):
             if success:
                 height, width = frame.shape[:2]
                 if frame.ndim == 3:
-                    rgb = cvtColor(frame, COLOR_BGR2RGB)
+                    rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 elif frame.ndim == 2:
-                    rgb = cvtColor(frame, COLOR_GRAY2BGR)
+                    rgb = cv2.cvtColor(frame, cv2.COLOR_GRAY2BGR)
 
                 temp_image = QImage(rgb.flatten(), width, height, QImage.Format_RGB888)
                 temp_pixmap = QPixmap.fromImage(temp_image)
