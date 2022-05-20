@@ -106,7 +106,7 @@ class SmartDerainWindow(QtWidgets.QWidget, Ui_DerainForm):
                 print(model_path)
                 ckpt = tf.train.latest_checkpoint(model_path)  # try your own model
                 saver.restore(sess, ckpt)
-                for i in range(frame_count):   # 这里改为frame_count
+                for i in range(10):   # 这里改为frame_count
                     derained, ori = sess.run([output, rainy])
                     derained = np.uint8(derained * 255.)
                     video.write(derained)

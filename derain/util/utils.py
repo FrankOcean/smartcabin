@@ -109,3 +109,52 @@ def sync_video(file_dir, video_name='output.avi'):
     video.release()
     cv2.destroyAllWindows()
     print('视频合成生成完成')
+
+# 列出当前目录下的所有文件和目录名
+def list_all_filename():
+    return [d for d in os.listdir('.')]
+
+# 输出某个路径下的所有文件和文件夹的路径
+def list_all_dir(filepath):
+    list = []
+    for i in os.listdir(filepath):  # 获取目录中文件及子目录列表
+        #print(os.path.join(filepath, i))   # 把路径组合起来
+        list.append(os.path.join(filepath, i))
+    return list
+
+# 输出某个路径及其子目录下的所有文件路径
+def list_all_seed_dir(filepath):
+    for i in os.listdir(filepath):
+        path = os.path.join(filepath, i)
+        print(path)
+        if os.path.isdir(path):
+            list_all_seed_dir(path)      # 递归
+
+# 输出某个路径及其子目录下所有以.mp4为后缀的文件
+def print_dir (filepath, end=".mp4"):
+    for i in os.listdir(filepath):
+        path = os.path.join(filepath, i)
+        if os.path.isdir(path):
+            print_dir(path)
+        if path.endswith(end):
+            print(path)
+
+
+#写文件
+def write_totxt(filepath="test.txt"):
+    with open (filepath, "wt") as outfile:
+        outfile.write("该文本会写入到文件中 n 看到我了吧！")
+
+#Read a file
+def read_file(filepath="test.txt"):
+    with open(filepath, "rt") as infile:
+        return infile.read()
+
+
+
+
+
+
+
+
+
