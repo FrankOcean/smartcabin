@@ -114,7 +114,6 @@ class Video(QWidget):
             self.btn_detect.setStyleSheet("QPushButton{background:green;}")
         else:
             self.btn_detect.setStyleSheet("QPushButton{background:red;}")
-    #        self.label_num.setText("There are 5 people.")
 
 
 if __name__ == "__main__":
