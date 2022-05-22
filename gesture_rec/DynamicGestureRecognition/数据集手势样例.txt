@@ -1,0 +1,27 @@
+Thumb Up = press,space  #拇指向上
+Thumb Down   #拇指向下
+Swiping Up = cmd,up  向上挥
+Swiping Down = cmd,down  向下挥
+Turning Hand Clockwise = press,p        #将手顺时针
+Turning Hand Counterclockwise = press,n   #将手逆时针
+Swiping Left = press,left    #向左挥
+Swiping Right = press,right  #向右挥
+Stop Sign   停止
+Shaking Hand  握握手
+推开手   Pushing Hand Away
+拉的手   Pulling Hand In
+向左滑动两根手指   Sliding Two Fingers Left
+向右滑动两根手指   Sliding Two Fingers Right
+两根手指向下滑动   Sliding Two Fingers Down
+两根手指向上滑动   Sliding Two Fingers Up
+推开两根手指   Pushing Two Fingers Away
+扳两根手指   Pulling Two Fingers In
+向前滚动的手   Rolling Hand Forward
+滚动的手向后   Rolling Hand Backward
+用手放大   Zooming In With Full Hand
+用手放大   Zooming Out With Full Hand
+用两个手指放大   Zooming In With Two Fingers
+用两根手指缩小   Zooming Out With Two Fingers
+打鼓的手指   Drumming Fingers
+没有手势   No gesture
+做其他事情   Doing other things
