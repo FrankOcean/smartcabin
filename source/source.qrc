@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="images">
+    <file>e-coc.jpeg</file>
+    <file>ivi.jpeg</file>
+  </qresource>
+</RCC>

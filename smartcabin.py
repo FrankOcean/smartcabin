@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets
 from mainwindow.main_window import Ui_MainWindow
-from derain.derain import Ui_DerainForm
+from smart_derain import SmartDerainWindow
 from dehaze.dehaze import Ui_DehazeForm
 from eye_track.eyetrack import Ui_EyetrackForm
 from face_rec.facerec import Ui_FacerecForm
@@ -23,63 +23,74 @@ class SmartWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.actioneyetrack.triggered.connect(self.open_eyetrack_window)
         self.actionsemantic.triggered.connect(self.open_segmentic_window)
 
+    def hide_banner(self):
+        self.banner1.hide()
+        self.banner2.hide()
+
     # 打开去雨窗口
     def open_derain_window(self):
-        self.child = ChildrenDerainForm()
+        self.child = SmartDerainWindow()
         self.verticalLayout.addWidget(self.child)
         self.child.show()
+        self.hide_banner()
 
     # 打开去尘窗口
     def open_dehaze_window(self):
         self.child = ChildrenDehazeForm()
         self.verticalLayout.addWidget(self.child)
         self.child.show()
+        self.hide_banner()
 
     # 打开眼动窗口
     def open_eyetrack_window(self):
         self.child = ChildrenEyetrackForm()
         self.verticalLayout.addWidget(self.child)
         self.child.show()
+        self.hide_banner()
 
     # 打开人脸识别窗口
     def open_facerec_window(self):
         self.child = ChildrenFacerecForm()
         self.verticalLayout.addWidget(self.child)
         self.child.show()
+        self.hide_banner()
 
     # 打开手势识别窗口
     def open_gesturerec_window(self):
         self.child = ChildrenGestureForm()
         self.verticalLayout.addWidget(self.child)
         self.child.show()
+        self.hide_banner()
 
     # 打开语义分割窗口
     def open_segmentic_window(self):
         self.child = ChildrenSemanticForm()
         self.verticalLayout.addWidget(self.child)
         self.child.show()
+        self.hide_banner()
 
     # 打开语义分割窗口
     def open_imglink_window(self):
         self.child = ChildrenImglinkForm()
         self.verticalLayout.addWidget(self.child)
         self.child.show()
+        self.hide_banner()
 
     # 测试事件
     def testClick(self):
         self.msg()
 
     def msg(self):
-        reply = QtWidgets.QMessageBox.information(self,  # 使用infomation信息框
+        QtWidgets.QMessageBox.information(self,  # 使用infomation信息框
                                         "标题",
                                         "测试用",
                                         QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
 
 # 1. derain children window
-class ChildrenDerainForm(QtWidgets.QWidget, Ui_DerainForm):
-    def __init__(self):
-        super(ChildrenDerainForm, self).__init__()
-        self.setupUi(self)
+# class ChildrenDerainForm(QtWidgets.QWidget, SmartDerainWindow):
+#     def __init__(self):
+#         super(ChildrenDerainForm, self).__init__()
+#         self.setupUi(self)
 
 # 2. dehaze children window
 class ChildrenDehazeForm(QtWidgets.QWidget, Ui_DehazeForm):

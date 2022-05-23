@@ -3,7 +3,7 @@
 # 1.环境
 - 系统：windows, macos 或 linux
 - IDE: pycharm 或 Qt(https://www.qt.io/download-qt-installer)
-- python：3.8 或 3.9
+- python：3.9
 - git
 - pyqt5==5.15.2
 # 2. 模块
