@@ -9,21 +9,128 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
-
+from PyQt5.QtCore import QTimer
+from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtWidgets import QMessageBox
+import cv2
+import numpy as np
+from gesture_rec.StaticGestureRecognition.Gesture_Mouse.AiVirtualMouse import static_aivirtualMouse
+from gesture_rec.DynamicGestureRecognition.dynamic_gesture import dynamic_gesture
 class Ui_GestureForm(object):
     def setupUi(self, GestureForm):
         GestureForm.setObjectName("GestureForm")
         GestureForm.resize(967, 688)
-        self.pushButton = QtWidgets.QPushButton(GestureForm)
-        self.pushButton.setGeometry(QtCore.QRect(570, 210, 89, 27))
-        self.pushButton.setObjectName("pushButton")
+        self.btn_dynamic_gesture = QtWidgets.QPushButton(GestureForm)
+        self.btn_dynamic_gesture.setGeometry(QtCore.QRect(490, 590, 90, 30))
+        self.btn_dynamic_gesture.setObjectName("btn_dynamic_gesture")
+        self.btn_stop = QtWidgets.QPushButton(GestureForm)
+        self.btn_stop.setGeometry(QtCore.QRect(690, 590, 90, 30))
+        self.btn_stop.setObjectName("stop")
+        self.btn_start = QtWidgets.QPushButton(GestureForm)
+        self.btn_start.setGeometry(QtCore.QRect(90, 590, 90, 30))
+        self.btn_start.setObjectName("btn_start")
+        self.btn_static_gesture = QtWidgets.QPushButton(GestureForm)
+        self.btn_static_gesture.setGeometry(QtCore.QRect(290, 590, 90, 30))
+        self.btn_static_gesture.setObjectName("btn_static_gesture")
+        self.label = QtWidgets.QLabel(GestureForm)
+        self.label.setGeometry(QtCore.QRect(120, 90, 640, 480))
+        self.label.setStyleSheet("background-color:rgb(221, 255, 194);")
+        self.label.setWordWrap(False)
+        self.label.setObjectName("label")
+        self.btn_close = QtWidgets.QPushButton(GestureForm)
+        self.btn_close.setGeometry(QtCore.QRect(690, 30, 90, 30))
+        self.btn_close.setObjectName("btn_close")
 
         self.retranslateUi(GestureForm)
-        self.pushButton.clicked.connect(GestureForm.close)
+        self.btn_close.clicked.connect(GestureForm.close)
         QtCore.QMetaObject.connectSlotsByName(GestureForm)
+
+        # my code
+        self.fps = 33  # 33频率 合计30fps
+        self.frame = []  # 存图片
+        self.cap = []
+        self.timer_camera = QTimer()  # 定义定时器
+        self.staticGestureFlag = False   #静态手势
+        self.dynamicGestureFlag = False  # 动态手势
+        # connect slot
+        self.btn_start.clicked.connect(self.slotStart)
+        self.btn_stop.clicked.connect(self.slotStop)
+        self.btn_dynamic_gesture.clicked.connect(self.slotDynamicGesture)
+        self.btn_static_gesture.clicked.connect(self.slotStaticGesture)
 
     def retranslateUi(self, GestureForm):
         _translate = QtCore.QCoreApplication.translate
         GestureForm.setWindowTitle(_translate("GestureForm", "Form"))
-        self.pushButton.setText(_translate("GestureForm", "关闭"))
+        self.btn_dynamic_gesture.setText(_translate("GestureForm", "动态手势识别"))
+        self.btn_stop.setText(_translate("GestureForm", "停止"))
+        self.btn_start.setText(_translate("GestureForm", "开始"))
+        self.btn_static_gesture.setText(_translate("GestureForm", "静态手势识别"))
+        self.label.setText(_translate("GestureForm",
+                                      "<html><head/><body><p><span style=\" font-style:italic;\">等待视频输入</span></p></body></html>"))
+        self.btn_close.setText(_translate("GestureForm", "关闭"))
+
+    def slotStart(self):
+        """ Slot function to start the progamme"""
+        self.cap = cv2.VideoCapture(0)
+        # self.cap.set(cv2.CAP_PROP_FRAME_WIDTH,1280)
+        # self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT,960)
+        self.timer_camera.start(self.fps)
+        self.timer_camera.timeout.connect(self.openFrame)
+
+    def slotDynamicGesture(self):
+        print("动态手势")
+        self.dynamicGestureFlag = not self.dynamicGestureFlag
+        if self.dynamicGestureFlag == True:
+            self.btn_dynamic_gesture.setText("动态手势停止")
+        else:
+            self.btn_dynamic_gesture.setText("动态手势开始")
+        #self.cursor.setVisible(self.showCursorFlag)
+
+    def slotStaticGesture(self):
+        print("静态手势")
+        self.staticGestureFlag = not self.staticGestureFlag  #True
+        if self.staticGestureFlag == True:
+            self.btn_static_gesture.setText("静态手势停止")
+        else:
+            self.btn_static_gesture.setText("静态手势开始")
+
+    def slotStop(self):
+        """ Slot function to stop the programme
+            """
+        if self.cap != []:
+            self.cap.release()
+            self.timer_camera.stop()  # 停止计时器
+            self.label.setText("This video has been stopped.")
+            self.label.setText("等待视频输入")
+            self.label.setStyleSheet("background-color:rgb(221, 255, 194);font-style:italic;")
+        else:
+            self.label_num.setText("Push the left upper corner button to Quit.")
+
+    def openFrame(self):
+        """ Slot function to capture frame and process it """
+        if (self.cap.isOpened()):
+            ret, frame = self.cap.read()
+            if ret:
+                if self.staticGestureFlag == True:
+                    frame = static_aivirtualMouse(frame)
+                elif self.dynamicGestureFlag == True:
+                    frame = dynamic_gesture(frame)
+                else:
+                    frame = cv2.flip(frame,1)
+
+                frame2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                height, width, bytesPerComponent = frame2.shape
+                bytesPerLine = bytesPerComponent * width
+                q_image = QImage(frame2.data, width, height, bytesPerLine,
+                                 QImage.Format_RGB888).scaled(self.label.width(), self.label.height())
+                self.label.setPixmap(QPixmap.fromImage(q_image))
+            else:
+                self.cap.release()
+                self.timer_camera.stop()  # 停止计时器
+
+    def detection(self):
+        self.detectFlag = not self.detectFlag  # 取反
+        if self.detectFlag == True:
+            self.btn_detect.setStyleSheet("QPushButton{background:green;}")
+        else:
+            self.btn_detect.setStyleSheet("QPushButton{background:red;}")
