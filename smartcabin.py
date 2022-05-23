@@ -7,7 +7,6 @@ from face_rec.facerec import Ui_FacerecForm
 from gesture_rec.gesture import Ui_GestureForm
 from semantic_seg.semantic import Ui_SemanticForm
 from imglink.imglink import Ui_ImglinkForm
-
 # 系统主菜单
 class SmartWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
