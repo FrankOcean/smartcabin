@@ -3,4 +3,4 @@
 opencv
 face_recognization
 ### 2. 使用
-python smart_face
+python smart_facerec.py
