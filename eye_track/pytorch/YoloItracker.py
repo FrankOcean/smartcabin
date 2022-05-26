@@ -29,7 +29,7 @@ device = "cuda:0" if torch.cuda.is_available() else "cpu"
 
 
 
-model = attempt_load(current_directory+"/yolov5/models/best.pt", map_location=device)
+model = attempt_load(current_directory+"/yolov5/weights/best.pt", map_location=device)
 dataset = LoadStreams("0")
 tracker = ITrackerModel()
 tracker.load_state_dict(torch.load(current_directory+"/checkpoint.pth.tar", map_location='cpu')['state_dict'])
@@ -187,12 +187,12 @@ def test1():
     device = select_device("0")
 
     # Create model
-    model = attempt_load("yolov5/models/best.pt", map_location=device)
+    # model = attempt_load("yolov5/models/best.pt", map_location=device)
     # if True:
 
     while True:
         ret, frame = cap.read()
-        # frame = cv2.imread("yolov5/data/detectdata/images/10.jpg")
+        frame = cv2.imread("yolov5/data/detectdata/images/10.jpg")
         img = frame
 
         # xp,yp = frame.shape[0], frame.shape[1]
@@ -240,7 +240,7 @@ def test1():
 def test2():
     device = select_device("cpu")
     # Create model
-    model = attempt_load("yolov5/models/best.pt", map_location=device)
+    # model = attempt_load("yolov5/models/best.pt", map_location=device)
     dataset = LoadStreams("0")
     tracker = ITrackerModel()
 
