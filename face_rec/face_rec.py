@@ -9,6 +9,7 @@ user_names = []
 user_faces_encodings = []
 # 得到face_databases中所有文件
 files = os.listdir('face_databases')
+print("数据库加载中。。。")
 # 循环读取
 for image_shot_name in files:
     # 截取文件名作为用户名 存入user_names列表中
