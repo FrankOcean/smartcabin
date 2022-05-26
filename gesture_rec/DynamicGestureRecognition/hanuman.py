@@ -83,6 +83,7 @@ def main(args):
     # 预加载网络
     yu_batch = np.zeros((1, 16) + (64,96) + (3,))
     net.predict(yu_batch)
+
     print("预加载网络----------------------------------------------------")
     # 加载手部检测跟踪
     hand_tracking = handDetector()
@@ -125,7 +126,7 @@ def main(args):
                     break
             else:
                 # 预测
-                res = net.predict(batch_x)
+                res = net.predict(batch_x,use_multiprocessing=True)
                 # 分类
                 predicted_class = labels_list[np.argmax(res)]
                 #print('Predicted Class = ', predicted_class, 'Accuracy = ', np.amax(res)*100,'%')
@@ -176,7 +177,7 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()#参数对象
-    parser.add_argument("--config",dest="config", default="./My_gesture_control_config.cfg",help="运行脚本所需的配置文件")#添加参数
+    parser.add_argument("--config",dest="config", default="./test123123.cfg",help="运行脚本所需的配置文件")#添加参数
     args = parser.parse_args()#解析参数
     config = configparser.ConfigParser()
     config.read(args.config)

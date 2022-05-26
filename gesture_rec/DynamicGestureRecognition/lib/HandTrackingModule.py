@@ -3,6 +3,8 @@ import mediapipe as mp
 import time
 import math
 
+#用于检测视频中是否出现手部
+
 class handDetector():
     def __init__(self, mode=False, maxHands=2, detectionCon=0.6, trackCon=0.6):
         self.mode = mode
@@ -31,6 +33,10 @@ class handDetector():
         # 如果有检测到手
         if self.results.multi_hand_landmarks:
             if self.results.multi_handedness[0].classification[0].label == "Right":
+                for hand21 in self.results.multi_hand_landmarks:
+                    if draw:
+                        # 可视化关键点及骨架连线
+                        self.mpDraw.draw_landmarks(img, hand21, self.mpHands.HAND_CONNECTIONS)
                 return True
             else:
                 return False
