@@ -29,3 +29,6 @@ cudatoolkit               10.2.89
 PyYAML                  6.0
 
 imageio                 2.17.0
+
+### 备注
+将eye_track设置为根目录

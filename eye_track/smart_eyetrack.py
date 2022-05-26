@@ -7,11 +7,12 @@ from eye_track.cursor import Cursor
 import cv2
 from PyQt5.QtCore import QTimer
 import random
+from eyetrack import Ui_EyetrackForm
 
-class Video(QWidget):
+class SmartEyetrackWindow(QWidget, Ui_EyetrackForm):
 
     def __init__(self):
-        super(Video, self).__init__()
+        super(SmartEyetrackWindow, self).__init__()
         self.fps = 33   # 33频率 合计30fps
         self.frame = []  # 存图片
         self.detectFlag = False  # 检测flag
@@ -118,6 +119,6 @@ class Video(QWidget):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    my = Video()
+    my = SmartEyetrackWindow()
     my.show()
     sys.exit(app.exec_())

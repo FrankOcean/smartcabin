@@ -25,6 +25,9 @@ class SmartFaceWindow(QtWidgets.QWidget, Ui_FacerecForm):
         self.btn_start.clicked.connect(self.slotStart)
         self.btn_stop.clicked.connect(self.slotStop)
 
+    def slotStart(self):
+        """ Slot function to start the progamme
+            """
         # 读取到数据库中的人名和面部特征
         self.face_databases_dir = 'face_databases'
         self.user_names = []
@@ -45,9 +48,6 @@ class SmartFaceWindow(QtWidgets.QWidget, Ui_FacerecForm):
             face_encoding = face_recognition.face_encodings(image_file)[0]
         self.user_faces_encodings.append(face_encoding)
 
-    def slotStart(self):
-        """ Slot function to start the progamme
-            """
         self.cap = cv2.VideoCapture(0)
         self.timer_camera.start(self.fps)
         self.timer_camera.timeout.connect(self.openFrame)
