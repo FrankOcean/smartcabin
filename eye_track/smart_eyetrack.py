@@ -154,8 +154,6 @@ class SmartEyetrackWindow(QWidget, Ui_EyetrackForm):
                 self.cap.release()
                 self.timer_camera.stop()  # 停止计时器
 
-
-
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     my = SmartEyetrackWindow()

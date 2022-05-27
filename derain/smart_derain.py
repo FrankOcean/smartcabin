@@ -3,7 +3,7 @@ from PyQt5 import QtWidgets
 import os, time, threading
 from derain import Ui_DerainForm
 from video_box import VideoBox
-from util.utils import *
+from py_utils import *
 from opt import *
 import training
 import tensorflow.compat.v1 as tf

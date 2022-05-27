@@ -181,7 +181,7 @@ def makeGrid(xyxy,gridSize=(25, 25)):
     return grid
 
 
-def test1():
+def ktest1():
     cfg = "yolov5/models/yolov5s.yaml"
     cfg = check_file(cfg)  # check file
     device = select_device("0")
@@ -237,10 +237,10 @@ def test1():
             break
 
 
-def test2():
+def ktest2():
     device = select_device("cpu")
     # Create model
-    # model = attempt_load("yolov5/models/best.pt", map_location=device)
+    model = attempt_load("yolov5/weights/best.pt", map_location=device)
     dataset = LoadStreams("0")
     tracker = ITrackerModel()
 
@@ -371,5 +371,5 @@ def test2():
     # root.mainloop()
 
 if __name__ == '__main__':
-    test2()
+    ktest2()
 
