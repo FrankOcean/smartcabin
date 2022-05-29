@@ -137,19 +137,22 @@ def main(args):
                 # gesture = gesture.lower()
                 Acc=np.amax(res)*100
                 print('Predicted Class = ', gesture, 'Accuracy = ', Acc, '%')
-
-                # 如果动作队列中的第一个手势与第二个手势不一样，并且队列中不重复的元素个数为1
                 """
                 设置交互操作
                 """
+                if gesture == "Swiping Left":
+                    print("向下滑动")
+                    pyautogui.scroll(-600)  # 向下滚动300个单位；
+
+                if gesture == "Swiping Right":
+                    print("向上滑动")
+                    pyautogui.scroll(600)
                 #清空
                 frame_num = 0
                 batch_x=[]
-
                 frame=cv2.resize(frame,(672,500))
                 if gesture=='No gesture':
                     Acc=0.000
-
                 frame = cv2.putText(frame, text=f'class: {gesture}', org=(10, 50),
                                     fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 255), thickness=3)
                 frame = cv2.putText(frame, text=' Acc: {:.5}%'.format(Acc), org=(10, 100),
@@ -163,7 +166,6 @@ def main(args):
                 frame_num = 0
                 batch_x = []
                 #print("---------手势列表已重置------------")
-
             frame = cv2.resize(frame, (672, 500))
             frame = cv2.putText(frame, text=f'class: {gesture}', org=(10, 50),
                                 fontFace=cv2.FONT_HERSHEY_SIMPLEX, fontScale=1, color=(0, 0, 255), thickness=3)

@@ -9,8 +9,8 @@ import argparse
 import configparser
 from ast import literal_eval
 import errno
-import keras
-import tensorflow as tf
+# import keras
+# import tensorflow as tf
 from gesture_rec.DynamicGestureRecognition.lib.HandTrackingModule import handDetector
 from gesture_rec.DynamicGestureRecognition.lib.data_loader import FrameQueue,FrameDeque
 from gesture_rec.DynamicGestureRecognition.lib import model
@@ -139,6 +139,13 @@ def dynamic_gesture(frame):
             """
             设置交互操作
             """
+            if myNet.gesture == "Swiping Left":
+                print("向下滑动")
+                pyautogui.scroll(-600)  # 向下滚动300个单位；
+
+            if myNet.gesture == "Swiping Right":
+                print("向上滑动")
+                pyautogui.scroll(600)
             # 清空
             myNet.frame_num = 0
             myNet.batch_x = []
