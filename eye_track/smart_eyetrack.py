@@ -13,6 +13,8 @@ from eye_track.cursor import Cursor
 from eye_track.pytorch.YoloItracker import pred_once, process_img
 from eye_track.remove_glass.MyRemoval import remove_glass
 from eyetrack import Ui_EyetrackForm
+from gazebox import gazebox
+
 
 class SmartEyetrackWindow(QWidget, Ui_EyetrackForm):
 
@@ -54,10 +56,15 @@ class SmartEyetrackWindow(QWidget, Ui_EyetrackForm):
         self.cap = []
         self.timer_camera = QTimer()  # 定义定时器
         self.removeGlassFlag = False
+
         self.cursor = Cursor()
         self.cursor.show()
         self.showCursorFlag = False
         self.cursor.setVisible(self.showCursorFlag)
+
+        self.gbox = gazebox()
+        self.gbox.show()
+
         # connect slot
         self.btn_start.clicked.connect(self.slotStart)
         self.btn_stop.clicked.connect(self.slotStop)
@@ -84,7 +91,7 @@ class SmartEyetrackWindow(QWidget, Ui_EyetrackForm):
         self.cap = cv2.VideoCapture(0)
         # self.cap.set(cv2.CAP_PROP_FRAME_WIDTH,1280)
         # self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT,960)
-        self.cursor.setVisible(True)
+        # self.cursor.setVisible(True)
         self.timer_camera.start(self.fps)
         self.timer_camera.timeout.connect(self.openFrame)
 
@@ -120,8 +127,6 @@ class SmartEyetrackWindow(QWidget, Ui_EyetrackForm):
             self.label.setStyleSheet("background-color:rgb(221, 255, 194);font-style:italic;")
         else:
             self.label_num.setText("Push the left upper corner button to Quit.")
-            Warming = QMessageBox.warning(self, "Warming", "Push the left upper corner button to Quit.",
-                                          QMessageBox.Yes)
 
     def openFrame(self):
         """ Slot function to capture frame and process it
@@ -144,6 +149,8 @@ class SmartEyetrackWindow(QWidget, Ui_EyetrackForm):
                     else:
                         frame2 = lst[-1]
                 self.cursor.move(xx, yy)
+                self.gbox.moveCursor(xx, yy)
+
                 frame2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2RGB)
                 height, width, bytesPerComponent = frame2.shape
                 bytesPerLine = bytesPerComponent * width
