@@ -50,7 +50,7 @@ class Dynamic_gesture():
         self.batch_x = []
         self.t0 = 0.00
         self.t1 = 0.00
-        self.gesture = 'No self.gesture'
+        self.gesture = 'No gesture'
         self.Acc = 0.0
         self.action = {} #映射集合
         self.labels_list = Dynamic_gesture.csv_label(self) # 创建空列表来存储标签列表
@@ -111,9 +111,11 @@ def dynamic_gesture(frame):
         # 把读入的 bgr模式转换为 rgb
         b, g, r = cv2.split(frame)
         frame_calibrated = cv2.merge([r, g, b])  # (240, 320, 3)
-        if myNet.frame_num < 16:
+        if myNet.frame_num <= 16:
             # 输入模型的 batch 大小  (1, 16, 64, 96, 3)
+            print(myNet.frame_num)
             myNet.batch_x = myNet.frame_queue.img_in_queue(frame_calibrated)
+
             frame = cv2.resize(frame, (672, 500))
             frame = cv2.flip(frame,1)
             frame = cv2.putText(frame, text=f'class: {myNet.gesture}', org=(10, 50),
@@ -161,7 +163,7 @@ def dynamic_gesture(frame):
             return frame
     else:
         myNet.t1 = time.perf_counter()
-        if myNet.t1 - myNet.t0 > 2:
+        if myNet.t1 - myNet.t0 > 1.5:
             myNet.frame_num = 0
             myNet.batch_x = []
             # print("---------手势列表已重置------------")

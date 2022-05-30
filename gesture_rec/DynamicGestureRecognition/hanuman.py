@@ -89,7 +89,7 @@ def main(args):
     hand_tracking = handDetector()
 
     # 打开摄像头
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
     # 设置图像的长宽
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
@@ -113,7 +113,8 @@ def main(args):
             #把读入的 bgr模式转换为 rgb
             b, g, r = cv2.split(frame)
             frame_calibrated = cv2.merge([r, g, b])  # (240, 320, 3)
-            if frame_num < 16:
+            #if frame_num <= 32 and frame_num % 2 == 0:
+            if frame_num <= 16 :
                 # 输入模型的 batch 大小  (1, 16, 64, 96, 3)
                 batch_x = frame_queue.img_in_queue(frame_calibrated)
                 frame = cv2.resize(frame, (672, 500))
@@ -162,7 +163,7 @@ def main(args):
                     break
         else:
             t1 = time.perf_counter()
-            if t1-t0>2:
+            if t1-t0>1.5:
                 frame_num = 0
                 batch_x = []
                 #print("---------手势列表已重置------------")
